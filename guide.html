@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Picture guide | Tez Rigs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #f2efe9;
+      --sheet: #fbfaf6;
+      --ink: #0f0f11;
+      --ink-soft: #5c5a56;
+      --line: #d9d3c5;
+      --brick: #4f7d0a;
+      --brick-deep: #3f6606;
+      --tint: #e9f5d2;
+      --sand: #f0d9c6;
+      --ok: #2d7a4f;
+      --display: "Instrument Serif", Georgia, serif;
+      --text: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible { outline: 2px solid var(--brick); outline-offset: 2px; border-radius: 4px; }
+
+    a { color: var(--brick-deep); }
+    code { font-family: var(--mono); font-size: 0.88em; background: var(--tint); padding: 0.1em 0.35em; border-radius: 4px; }
+
+    /* ---------- Sticky bar: what is in the site so far ---------- */
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 20px;
+      padding: 10px clamp(16px, 4vw, 40px);
+      background: rgba(242, 239, 233, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .progress { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
+    .meter { width: 120px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+    .meter span { display: block; height: 100%; width: 0; background: var(--ok); transition: width 300ms ease; }
+
+    .linkbtn {
+      border: 0; background: none; padding: 0; font: inherit; font-size: 0.9rem;
+      color: var(--brick-deep); text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+    }
+
+    /* ---------- Page ---------- */
+    main { max-width: 860px; margin: 0 auto; padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 80px; }
+
+    h1 { margin: 0 0 0.25em; font-family: var(--display); font-weight: 400; font-size: clamp(2.2rem, 5.2vw, 3.3rem); line-height: 1; letter-spacing: -0.02em; }
+    .lede { margin: 0 0 24px; max-width: 62ch; color: var(--ink-soft); font-size: 1.05rem; }
+
+    .step { margin-top: clamp(40px, 7vw, 72px); }
+    .step > h2 { display: flex; align-items: baseline; gap: 14px; margin: 0 0 6px; font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .step > h2 .num { font-family: var(--display); font-weight: 400; font-size: 2.2rem; color: var(--brick); }
+    .step > p { margin: 0 0 18px; max-width: 66ch; color: var(--ink-soft); }
+
+    /* Model recommendation */
+    .model { padding: 18px 20px; border-radius: 10px; background: var(--ink); color: var(--sheet); }
+    .model .label { margin: 0; font-size: 0.85rem; color: rgba(251, 250, 246, 0.7); }
+    .model .name { margin: 2px 0 6px; font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .model .name small { margin-left: 8px; font-size: 0.85rem; font-weight: 400; color: rgba(251, 250, 246, 0.7); }
+    .model .why { margin: 0 0 12px; max-width: 64ch; color: rgba(251, 250, 246, 0.86); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .chips li { padding: 4px 11px; border-radius: 999px; background: rgba(240, 217, 198, 0.14); border: 1px solid rgba(240, 217, 198, 0.5); color: var(--sand); font-size: 0.88rem; font-weight: 500; }
+
+    /* One card per thing to generate */
+    .asset { margin-top: 14px; padding: 16px 18px; background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; }
+    .asset.is-found { border-color: var(--ok); }
+    .asset-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; }
+    .asset-head h3 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+    .asset-head .n { display: inline-grid; place-items: center; min-width: 30px; height: 30px; padding: 0 8px; border-radius: 6px; background: var(--ink); color: var(--sheet); font-weight: 700; font-size: 0.92rem; }
+    .status { margin-left: auto; padding: 2px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; background: var(--page); color: var(--ink-soft); border: 1px solid var(--line); }
+    .is-found .status { background: #dff1e4; color: var(--ok); border-color: #a9d6b8; }
+
+    .attach { margin: 0 0 10px; padding: 8px 12px; border-radius: 8px; background: #f8ecd0; border: 1px solid #e6d3a3; font-size: 0.93rem; }
+    .attach b { font-weight: 700; }
+
+    .asset-body { display: flex; gap: 14px; align-items: flex-start; }
+    .prompt { flex: 1; margin: 0; padding: 12px 14px; border-left: 3px solid var(--brick); border-radius: 0 8px 8px 0; background: var(--tint); font-size: 0.95rem; white-space: pre-wrap; }
+    .preview { flex: none; width: 150px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+    .preview[hidden] { display: none; }
+
+    .asset-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; font-size: 0.9rem; color: var(--ink-soft); }
+    .copy { border: 0; border-radius: 6px; padding: 8px 16px; background: var(--brick); color: #fff; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .copy:hover { background: var(--brick-deep); }
+    .copy.is-done { background: var(--ok); }
+
+    .note { margin: 14px 0 0; padding: 12px 14px; border-radius: 10px; background: #f8ecd0; border: 1px solid #e6d3a3; font-size: 0.93rem; }
+
+    .files { margin: 0; padding: 14px 16px; border-radius: 10px; background: var(--ink); color: var(--sheet); font-family: var(--mono); font-size: 0.86rem; line-height: 1.7; overflow-x: auto; }
+
+    @media (max-width: 620px) {
+      .bar { position: static; }
+      .asset-body { flex-direction: column; }
+      .preview { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { .meter span { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="progress" aria-live="polite">
+      <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+      <span id="progressText">Checking folder</span>
+      <button class="linkbtn" id="recheck" type="button">Check folder again</button>
+    </div>
+  </div>
+
+  <main>
+    <h1>Ten pictures and one clip</h1>
+    <p class="lede">
+      That is everything you need to make. Two pictures and one 15 second clip for the opening,
+      one workbench picture, three square pictures for the ideas and four for the services.
+      Make them in the order below, because later pictures use earlier ones.
+    </p>
+
+    <p class="note">
+      <b>How to read each card:</b> the yellow line says which earlier picture to attach as the
+      reference image. If it says "Attach nothing", leave the reference empty. Then press
+      Copy prompt and paste it into Higgsfield.
+    </p>
+
+    <div id="groups"></div>
+
+    <section class="step">
+      <h2><span class="num" id="filesNum"></span> What to send me</h2>
+      <p>Download the ten pictures and the clip from Higgsfield and send them to me as they are, in one zip. I name them, cut the clip into the scroll film, sharpen it, and put everything in the site.</p>
+      <pre class="files">Picture 1   the three PCs             Picture 6   finish, peeling the film
+Picture 2   inside the middle PC     Picture 7   the coolant tubes
+Picture 3   hands routing cables     Picture 8   the cables at the back
+Picture 4   speed, spinning fans     Picture 9   the glowing corner
+Picture 5   silence, copper and fan  Picture 10  the thermal camera
+The clip    15 seconds, the fly-in (send every take you made)</pre>
+    </section>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const DIR = "assets/pc";
+    const TYPES = ["jpg", "png", "webp", "jpeg"];
+
+    const RIG = "a large full-tower gaming PC of an invented design in matt black aluminium, with tempered glass on its front and its side, packed densely with hardware: a huge graphics card mounted upright with a mirror-polished water block, a tall glass distribution plate with channels of glowing lime-green coolant, thick clear hard tubes of lime-green coolant bending at sharp right angles between chrome fittings, two radiators with six fans glowing with white rings, a round processor water block with a glowing white ring, four sticks of memory with lime-green light bars, and black sleeved cables combed into neat parallel lines, with plain unbranded parts and no lettering";
+    const LOOK = "Ultra-detailed photorealistic product photograph, razor sharp, cinematic low-key lighting with a strong rim light on every metal edge, deep blacks, rich reflections. No people, no text, no letters, no numbers, no logos, no brand names on any part.";
+    const CLOSE = "Ultra-detailed photorealistic close-up photograph, razor sharp where it is in focus, shallow depth of field, cinematic low-key lighting with a rim light on the metal edges, thin haze in the light, dark background. No text, no letters, no numbers, no logos, no brand names on any part.";
+
+    const PICTURE_MODEL = {
+      name: "Nano Banana Pro", by: "for all ten pictures",
+      why: "Marked Unlimited in your Higgsfield account, so with the Unlimited switch on it costs no credits. It keeps the same PC from one picture to the next when you attach an earlier picture.",
+      chips: ["Unlimited switch on", "Resolution 2K", "16:9 or 1:1 (each card says which)"],
+    };
+    const CLIP_MODEL = {
+      name: "Seedance 2.5", by: "for the clip",
+      why: "Unlimited at 480p on your plan. I sharpen the clip afterwards, and the first and last frames are replaced by your real pictures, so 480p is enough.",
+      chips: ["Unlimited switch on", "480p", "15 seconds", "16:9", "Start frame: Picture 1", "End frame: Picture 2"],
+    };
+
+    const GROUPS = [
+      {
+        title: "The three PCs and the inside",
+        model: PICTURE_MODEL,
+        intro: "Make the three PCs first. Then attach that picture and make the inside view, so it is the inside of the same middle PC. The clip flies from the first picture into the second.",
+        note: "<b>Check the two pictures:</b> in Picture 1 the three PCs should be big and packed with parts, not small and empty, with a strip of dark space along the top for the headline. In Picture 2 you should be looking at the parts from inside the case. No brand names or letters on any part.",
+        items: [
+          { n: 1, file: "rigs", title: "The three PCs", ratio: "16:9", attach: null,
+            text: `A dramatic wide photograph of three flagship custom gaming PCs standing close together on a black glass desk in a dark studio, seen from the front with the camera slightly below desk height, so the machines look tall and powerful. They are large in the picture: together they span almost its full width, and the middle one is about two-thirds of its height. In the middle, slightly ahead of the others and turned a little so both its glass front and its glass side show: ${RIG}. On its left: a compact showcase PC in brushed silver aluminium with glass on three sides, just as densely packed, with a small upright graphics card, short chrome tubes of white coolant and white-ringed fans. On its right: a tall two-chamber tower in dark gunmetal aluminium with a full glass side, a column of four white-ringed fans, a second loop of lime-green coolant and a thick radiator in its roof. Every machine is full of parts, with no empty space inside. Thin haze hangs in the air and catches beams of white and lime-green light from behind the machines, the glass desk mirrors all three, and fine dust sparkles in the light. The background is black, with a faint row of vertical lime-green light bars far behind. The top fifth of the picture is dark and empty. ${LOOK} 16:9.` },
+          { n: 2, file: "inside", title: "Inside the middle PC", ratio: "16:9", attach: "Picture 1 (the three PCs)",
+            text: `The inside of the middle PC in the reference image, seen from inside the case, very close to the parts, looking straight at them with a wide-angle lens. The picture is crowded edge to edge with hardware. In the middle: a round processor water block with a glowing white ring, with thick clear hard tubes of lime-green coolant leaving it and bending at sharp right angles through chrome fittings. Behind it: a tall glass distribution plate with glowing lime-green channels. Along the bottom: a huge graphics card with a mirror-polished water block and a thin lime-green light line. To the right: four sticks of memory with lime-green light bars. On the left: three black fans with glowing white rings in front of a thick radiator. Black sleeved cables run in neat parallel lines, held by small combs. Thin haze catches the light between the parts, and the tubes and chrome reflect each other. No empty space anywhere. The top and bottom edges of the picture are the dark inner walls of the case. ${LOOK} 16:9.` },
+        ],
+      },
+      {
+        title: "The fly-in clip",
+        model: CLIP_MODEL,
+        intro: "One 15 second clip. The camera rushes across the desk, swings round the middle PC, dives through its glass and weaves between the parts before it stops. The site plays it as you scroll.",
+        note: "<b>Check the clip:</b> it must be one move with no cuts, fast but never jerky. The PCs must not bend or change shape, and the clip should end inside the case on the processor block. A fast move is harder for the model, so make it three or four times and send me all of them.",
+        items: [
+          { film: true, title: "The fly-in clip", ratio: "16:9, 15 seconds",
+            frames: "<b>Start frame:</b> Picture 1 (the three PCs). <b>End frame:</b> Picture 2 (inside the middle PC).",
+            text: `One continuous shot with no cuts and no cross-fades: a fast, flowing camera move like a high-end product film. The three PCs stand perfectly still, but everything inside them is alive. The fans spin, lime-green coolant streams through the tubes with tiny bubbles, and pulses of light race along the light bars.
+
+0 to 3 seconds: the camera starts low on the black glass desk and surges forward towards the middle PC, skimming the desk so its reflection rushes past underneath, while the two outer PCs sweep out of the picture on the left and the right.
+
+3 to 6 seconds: without slowing, the camera swings in a tight arc around the front corner of the middle PC, so close that the glass edge and the glowing fans fill the picture, with beams of light flaring through the haze.
+
+6 to 9 seconds: the camera dives straight through the glass side panel as if it were not there and plunges into the case, threading between the thick tubes of lime-green coolant, with the chrome fittings streaking past very close to the lens.
+
+9 to 12 seconds: it skims low over the mirror-polished graphics card, with reflections sliding across it, then rises past the spinning fans and the glowing distribution plate.
+
+12 to 15 seconds: the camera eases off smoothly, turns to face the round processor block and the row of memory sticks, and settles. The picture ends exactly on the end frame and holds still.
+
+Quick and energetic for the first twelve seconds, then one smooth slow-down. Light motion blur on things close to the lens, shallow depth of field, haze, lens flares, deep blacks, rich reflections, photorealistic, razor-sharp detail. The PCs never change shape or colour. No people, no text, no letters, no logos.` },
+        ],
+      },
+      {
+        title: "The workbench picture",
+        model: null,
+        intro: "Same model as the first two (Nano Banana Pro, Unlimited, 2K). This picture starts tiny in the middle of the screen and grows until it fills it.",
+        note: "<b>Check the picture:</b> the left third should be dark and plain, because the title sits there.",
+        items: [
+          { n: 3, file: "craft", title: "Hands routing cables", ratio: "16:9", attach: null,
+            text: `An extreme close-up photograph of a builder's hands guiding a bundle of black and lime-green sleeved cables through a small cable comb inside an open PC case on a dark workbench. A small screwdriver lies beside the case. Cool white light from the right, and the rest of the workshop is dark and out of focus. The left third of the picture is dark and plain. Photorealistic macro photograph, shallow depth of field, highly detailed. No text, no letters, no logos, no brand names. 16:9.` },
+        ],
+      },
+      {
+        title: "Three square pictures for the ideas",
+        model: null,
+        intro: "Same model, but set the shape to 1:1 (square). These sit on cards beside the words Speed, Silence and Finish.",
+        note: "<b>Check:</b> all three must be square, with the main thing in the middle.",
+        items: [
+          { n: 4, file: "value-1", title: "Speed: spinning fans", ratio: "1:1", attach: null,
+            text: `A close-up photograph of the three fans of a large black graphics card spinning fast, the blades blurred by motion, with a thin lime-green light line along the edge of the card. Plain parts with no lettering. ${CLOSE} 1:1.` },
+          { n: 5, file: "value-2", title: "Silence: copper and a slow fan", ratio: "1:1", attach: null,
+            text: `A close-up photograph of a thick copper radiator with fine fins and one large black fan turning slowly in front of it, in soft white light, with a few specks of dust floating in the light. Plain parts with no lettering. ${CLOSE} 1:1.` },
+          { n: 6, file: "value-3", title: "Finish: peeling the film", ratio: "1:1", attach: null,
+            text: `A close-up photograph of a hand peeling the clear protective film off the glass side panel of a matt black PC, with the ice-white and lime-green glow of the parts showing through the clean glass underneath. ${CLOSE} 1:1.` },
+        ],
+      },
+      {
+        title: "Four square pictures for the services",
+        model: null,
+        intro: "Same model, shape 1:1. Attach Picture 1 for all four, so they show the same middle PC. The first service uses Picture 2, so you do not make that one again.",
+        note: "<b>Check:</b> all four must show the same black PC with lime-green coolant. No brand names on any part, and no readable text on the little screen in picture 10.",
+        items: [
+          { n: 7, file: "cooling", title: "Cooling: the coolant tubes", ratio: "1:1", attach: "Picture 1 (the three PCs)",
+            text: `A close-up of the water-cooling loop of the middle PC in the reference image. Thick clear hard tubes filled with lime-green coolant bend at sharp right angles between the glass distribution plate and the round processor block, crossing in front of each other in layers, joined by chrome fittings. The picture is crowded with tubes and fittings from edge to edge. Ice-white light from the fans behind. ${CLOSE} 1:1.` },
+          { n: 8, file: "cables", title: "Cables: the hidden side", ratio: "1:1", attach: "Picture 1 (the three PCs)",
+            text: `The back side of the middle PC in the reference image with its metal panel taken off. Every black sleeved cable runs in straight parallel lines across the matt black metal, held by small cable combs and black straps, with nothing crossing and nothing loose. Soft white light from above. ${CLOSE} 1:1.` },
+          { n: 9, file: "lighting", title: "Lighting: the glowing corner", ratio: "1:1", attach: "Picture 1 (the three PCs)",
+            text: `The top front corner of the middle PC in the reference image, in near darkness. A thin lime-green light line runs along the edge of the case, and three fans glow with soft white rings behind the glass. Everything else falls into black. ${CLOSE} 1:1.` },
+          { n: 10, file: "testing", title: "Testing: the thermal camera", ratio: "1:1", attach: "Picture 1 (the three PCs)",
+            text: `The middle PC in the reference image standing on a steel workbench at night with its glass panel off. A small thermal camera on a short tripod points at it, and the camera's little screen shows a heat picture of the parts in purple, orange and yellow, with no text on it. A coiled black cable lies beside the tripod. ${LOOK} 1:1.` },
+        ],
+      },
+    ];
+
+    const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    const modelBox = (m) =>
+      `<div class="model"><p class="label">Model to pick in Higgsfield</p>` +
+      `<p class="name">${esc(m.name)}<small>${esc(m.by)}</small></p>` +
+      `<p class="why">${esc(m.why)}</p>` +
+      `<ul class="chips">${m.chips.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>`;
+
+    const cards = [];
+    const filmCards = [];
+    GROUPS.forEach((group, i) => {
+      const section = document.createElement("section");
+      section.className = "step";
+      section.innerHTML =
+        `<h2><span class="num">${i + 1}</span> ${esc(group.title)}</h2>` +
+        `<p>${esc(group.intro)}</p>` +
+        (group.model ? modelBox(group.model) : "") +
+        (group.note ? `<p class="note">${group.note}</p>` : "");
+      group.items.forEach((item) => {
+        const el = document.createElement("article");
+        el.className = "asset";
+        const attach = item.film
+          ? item.frames || `<b>Start frame:</b> Picture 1. <b>End frame:</b> Picture 2.`
+          : item.attach ? `<b>Attach:</b> ${esc(item.attach)}` : `<b>Attach nothing.</b>`;
+        const where = item.film ? "Plays in the site as you scroll" : `Goes in the site as <code>${esc(item.file)}.jpg</code>`;
+        el.innerHTML =
+          `<div class="asset-head">${item.film ? "" : `<span class="n">${item.n}</span>`}<h3>${esc(item.title)} (${item.ratio})</h3><span class="status">Not in the site yet</span></div>` +
+          `<p class="attach">${attach}</p>` +
+          `<div class="asset-body"><p class="prompt"></p><img class="preview" alt="" hidden></div>` +
+          `<div class="asset-foot"><button class="copy" type="button">Copy prompt</button><span>${where}</span></div>`;
+        el.querySelector(".prompt").textContent = item.text;
+        el.querySelector(".copy").addEventListener("click", (e) => copy(item.text, e.currentTarget));
+        section.append(el);
+        if (item.film) filmCards.push(el);
+        else cards.push({ el, file: item.file });
+      });
+      document.getElementById("groups").append(section);
+    });
+    document.getElementById("filesNum").textContent = String(GROUPS.length + 1);
+
+    async function copy(text, button) {
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; }
+      catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.append(ta); ta.select();
+        try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+        ta.remove();
+      }
+      button.textContent = ok ? "Copied" : "Select the text and copy it";
+      button.classList.toggle("is-done", ok);
+      window.setTimeout(() => { button.textContent = "Copy prompt"; button.classList.remove("is-done"); }, 1800);
+    }
+
+    function findStill(file) {
+      return new Promise((resolve) => {
+        const attempt = (n) => {
+          if (n >= TYPES.length) return resolve(null);
+          const url = `${DIR}/${file}.${TYPES[n]}`;
+          const img = new Image();
+          img.onload = () => resolve(url);
+          img.onerror = () => attempt(n + 1);
+          img.src = `${url}?t=${Date.now()}`;
+        };
+        attempt(0);
+      });
+    }
+
+    let run = 0;
+    async function checkFolder() {
+      const mine = ++run;
+      const found = await Promise.all(cards.map((c) => findStill(c.file)));
+      // The film is in the site once the clip has been cut into frames.
+      const hasFilm = await fetch(`assets/film/manifest.json?t=${Date.now()}`).then((r) => r.ok).catch(() => false);
+      if (mine !== run) return;
+      found.forEach((url, i) => {
+        const card = cards[i];
+        card.el.classList.toggle("is-found", Boolean(url));
+        card.el.querySelector(".status").textContent = url ? "In the site" : "Not in the site yet";
+        const preview = card.el.querySelector(".preview");
+        preview.hidden = !url;
+        if (url) preview.src = url;
+      });
+      filmCards.forEach((card) => {
+        card.classList.toggle("is-found", hasFilm);
+        card.querySelector(".status").textContent = hasFilm ? "In the site" : "Not in the site yet";
+      });
+
+      const needed = cards.length + 1;
+      const done = found.filter(Boolean).length + (hasFilm ? 1 : 0);
+      document.getElementById("meterFill").style.width = `${(done / needed) * 100}%`;
+      document.getElementById("progressText").textContent =
+        done === needed ? "All ten pictures and the film are in the site" : `${done} of ${needed} in the site`;
+    }
+
+    document.getElementById("recheck").addEventListener("click", checkFolder);
+    window.addEventListener("focus", checkFolder);
+    checkFolder();
+  })();
+  </script>
+</body>
+</html>
